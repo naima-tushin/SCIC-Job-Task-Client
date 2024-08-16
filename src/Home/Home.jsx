@@ -3,14 +3,16 @@ import Navbar from '../Components/Navbar/Navbar';
 import Footer from '../Components/Footer/Footer';
 import ProductCard from '../Components/ProductCard/ProductCard';
 import ProductsList from '../Components/ProductList/ProductList';
+import Pagination from '../Components/Pagination/Pagination';
 
 const Home = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <Footer></Footer>
-            <ProductCard></ProductCard>
             <ProductsList></ProductsList>
+            <ProductCard></ProductCard>
+            <Pagination></Pagination>
+            <Footer></Footer>
         </div>
     );
 };

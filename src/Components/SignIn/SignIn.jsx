@@ -37,11 +37,16 @@ const SignIn = () => {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             const user = result.user;
-
+            // Fetch additional user information
+        const response = await fetch(`http://localhost:5000/api/users/${user.email}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch user details');
+        }
+        const userData = await response.json();
             localStorage.setItem('user', JSON.stringify({
-                name: '',
-                email: user.email || '',
-                photoURL: '',
+                name: userData.name,
+                email: userData.email || '',
+                photoURL: userData.imageUrl,
             }));
             navigate('/home');
         } catch (error) {
