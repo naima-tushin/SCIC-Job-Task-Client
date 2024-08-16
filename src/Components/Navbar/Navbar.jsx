@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import profileImagePlaceHolder from '../../assets/images/PP.png';
+import { auth, signOut } from '../../firebase/firebase.config'; 
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const [user, setUser] = useState({
+        name: '',
+        email: '',
+        photoURL: ''
+    });
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const loggedInUser = JSON.parse(localStorage.getItem('user')); 
+        if (loggedInUser) {
+            setUser(loggedInUser);
+        }
+    }, []);
+
+    const handleLogout = async () => {
+        await signOut(auth);
+        localStorage.removeItem('user');
+        setUser({
+            name: '',
+            email: '',
+            photoURL: ''
+        });
+        navigate('/');
+    };
+
     return (
         <div className="navbar lg:py-3 lg:px-8">
             <div className="navbar-start">
@@ -35,12 +64,24 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <div className="dropdown dropdown-end">
-                    <div tabIndex={0} className="btn lg:text-xl hover:bg-black hover:text-white border-0 shadow-[0]">Login/Register</div>
-                    <ul tabIndex={0} className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-40">
-                        <li><a className='text-lg justify-center'>Login</a></li>
-                        <li><a className='text-lg justify-center'>Register</a></li>
-                    </ul>
+                <div className="flex items-center space-x-4">
+                    {user && (
+                        <div className="flex items-center space-x-4">
+                            <div className="flex flex-col">
+                                <span className="font-medium">{user.name || 'No Name'}</span>
+                                <span className="text-sm text-gray-500">{user.email || 'No Email'}</span>
+                            </div>
+                            <img
+                                src={user.photoURL || profileImagePlaceHolder} 
+                                alt="User Avatar"
+                                className="w-8 h-8 rounded-full"
+                            />
+                        </div>
+                    )}
+                    <div className="mr-2 cursor-pointer text-[#F15E4A] font-medium text-sm"
+                        onClick={handleLogout}>
+                            LogOut
+                        </div>
                 </div>
             </div>
         </div>
