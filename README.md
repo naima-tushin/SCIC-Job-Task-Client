@@ -2,8 +2,6 @@
 
 PRODIFY
 
-## This is the frontend of the PRODIFY web application, which allows users to search, filter, and sort products efficiently.
-
 ## Project Overview
 
 The PRODIFY frontend is built using React and Tailwind CSS, providing users with functionalities like product search, filtering, sorting, and pagination. The UI is designed to be responsive and user-friendly.

@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = () => {
     return (
-        <div className="navbar py-3 px-8">
+        <div className="navbar lg:py-3 lg:px-8">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -22,21 +22,21 @@ const Navbar = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow uppercase">
-                        <li><a className='text-lg'>Home</a></li>
-                        <li><a className='text-lg'>Products</a></li>
+                        <li><a className='lg:text-lg'>Home</a></li>
+                        <li><a className='lg:text-lg'>Products</a></li>
                     </ul>
                 </div>
-                <a className="btn btn-ghost text-2xl uppercase font-bold bg-gray-200 hover:bg-black hover:text-white">Prodify</a>
+                <a className="btn btn-ghost lg:text-2xl uppercase font-bold bg-gray-100 hover:bg-black hover:text-white">Prodify</a>
             </div>
             <div className="navbar-center hidden lg:flex uppercase">
                 <ul className="menu menu-horizontal px-1">
-                    <li><a className='text-lg'>Home</a></li>
-                    <li><a className='text-lg'>Products</a></li>
+                    <li><a className='lg:text-lg'>Home</a></li>
+                    <li><a className='lg:text-lg'>Products</a></li>
                 </ul>
             </div>
             <div className="navbar-end">
                 <div className="dropdown dropdown-end">
-                    <div tabIndex={0} className="btn text-xl hover:bg-black hover:text-white border-0 shadow-[0]">Login/Register</div>
+                    <div tabIndex={0} className="btn lg:text-xl hover:bg-black hover:text-white border-0 shadow-[0]">Login/Register</div>
                     <ul tabIndex={0} className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-40">
                         <li><a className='text-lg justify-center'>Login</a></li>
                         <li><a className='text-lg justify-center'>Register</a></li>
