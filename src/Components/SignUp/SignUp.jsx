@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import img from '../../assets/images/Login.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword } from '../../firebase/firebase.config';
+import { Helmet } from 'react-helmet-async';
 
 const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -68,6 +69,9 @@ const SignUp = () => {
 
     return (
         <div className="min-h-screen">
+            <Helmet>
+                <title>Prodify | SignUp</title>
+            </Helmet>
             {/* Large Screens */}
             <div className="hidden lg:flex hero min-h-screen mx-auto w-[75%]">
                 <div className="hero-content flex-col lg:flex-row-reverse gap-24">

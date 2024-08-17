@@ -4,6 +4,7 @@ import { FcGoogle } from 'react-icons/fc';
 import img from '../../assets/images/Login.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword } from '../../firebase/firebase.config';
+import { Helmet } from 'react-helmet-async';
 
 
 const SignIn = () => {
@@ -37,12 +38,11 @@ const SignIn = () => {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             const user = result.user;
-            // Fetch additional user information
-        const response = await fetch(`http://localhost:5000/api/users/${user.email}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch user details');
-        }
-        const userData = await response.json();
+            const response = await fetch(`http://localhost:5000/api/users/${user.email}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch user details');
+            }
+            const userData = await response.json();
             localStorage.setItem('user', JSON.stringify({
                 name: userData.name,
                 email: userData.email || '',
@@ -62,6 +62,9 @@ const SignIn = () => {
 
     return (
         <div className="hero min-h-screen">
+            <Helmet>
+                <title>Prodify | SignIn</title>
+            </Helmet>
             <div className="hero-content flex-col lg:flex-row-reverse gap-28">
                 <div className="relative text-center lg:text-left">
                     <img className='w-[550px] h-[600px]' src={img} alt="Login" />
