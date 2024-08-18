@@ -20,7 +20,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=10`);
+        const response = await fetch(`https://scic-job-task-server-fkp1opp6h-naima-tushins-projects.vercel.app/api/products?page=${page}&limit=10`);
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

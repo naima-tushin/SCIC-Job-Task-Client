@@ -38,7 +38,7 @@ const SignIn = () => {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             const user = result.user;
-            const response = await fetch(`http://localhost:5000/api/users/${user.email}`);
+            const response = await fetch(`https://scic-job-task-server-fkp1opp6h-naima-tushins-projects.vercel.app/api/users/${user.email}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch user details');
             }
