@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import img from '../../assets/images/Login.png';
+import img from '../../assets/images/sign.avif';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword } from '../../firebase/firebase.config';
 import { Helmet } from 'react-helmet-async';
@@ -67,7 +67,7 @@ const SignIn = () => {
             </Helmet>
             <div className="hero-content flex-col lg:flex-row-reverse gap-28">
                 <div className="relative text-center lg:text-left">
-                    <img className='w-[550px] h-[600px]' src={img} alt="Login" />
+                    <img className='w-[550px] h-[600px] object-cover opacity-60' src={img} alt="Login" />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-[250px] h-[110px] bg-[#152A16] opacity-70 rounded-lg flex flex-col items-center justify-center">
                             <p className="text-xl text-center text-white"><span className='text-[#156BCA] font-bold'>Sign In</span> to view all the products</p>

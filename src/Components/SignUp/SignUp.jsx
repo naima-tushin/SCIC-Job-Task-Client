@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import img from '../../assets/images/Login.png';
+import img from '../../assets/images/sign.avif';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword } from '../../firebase/firebase.config';
 import { Helmet } from 'react-helmet-async';
@@ -76,7 +76,7 @@ const SignUp = () => {
             <div className="hidden lg:flex hero min-h-screen mx-auto w-[75%]">
                 <div className="hero-content flex-col lg:flex-row-reverse gap-24">
                     <div className="relative text-center lg:text-left">
-                        <img className='w-[550px] h-[600px]' src={img} alt="Login" />
+                        <img className='w-[550px] h-[600px] object-cover opacity-60' src={img} alt="Login" />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="w-[250px] h-[110px] bg-[#152A16] opacity-70 rounded-lg flex flex-col items-center justify-center">
                                 <h1 className="text-lg font-medium text-[#156BCA]">Create Account</h1>
@@ -187,13 +187,13 @@ const SignUp = () => {
 
             {/* Small Screens */}
             <div className="lg:hidden w-full h-screen relative">
-            <img className="w-full h-full object-cover" src={img} alt="Login" />
+            <img className="w-full h-full object-cover opacity-60" src={img} alt="Login" />
                 <div className="absolute inset-0 flex flex-col items-center text-white transition-opacity duration-300 z-10 mt-5">
                     {!showForm && (
                         <>
                             <h1 className="uppercase text-3xl text-[#4285F3] mb-3">Prodify</h1>
                             <h2 className="text-xl mb-3 text-[#1A2531] font-bold">Sign Up for an Account</h2>
-                            <p className="text-xs font-medium text-[#D1D1D1] leading-5 tracking-wide mb-10 px-7">
+                            <p className="text-xs font-medium text-black leading-5 tracking-wide mb-10 px-7">
                                 Welcome! By clicking the sign-up button, you agree to Zenitood Terms and Service and acknowledge the <span className="text-[#4285F3] underline">Privacy and Policy</span>
                             </p>
                             <button className="rounded-md py-2 px-5 bg-[#4285F3] text-white" onClick={() => setShowForm(true)}>Create Account</button>
