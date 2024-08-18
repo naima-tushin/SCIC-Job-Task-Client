@@ -1,124 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import ProductCard from '../ProductCard/ProductCard';
-// import Pagination from '../Pagination/Pagination';
-import Sorting from '../Sorting/Sorting';
-import Categorization from '../Categorization/Categorization';
-import Searching from '../Searching/Searching';
 
 const ProductList = () => {
-    const [allProducts, setAllProducts] = useState([]); // All products fetched
-    const [filteredProducts, setFilteredProducts] = useState([]); // Products to display
-    const [currentPage, setCurrentPage] = useState(0); // Manage current page
-    const [totalPages, setTotalPages] = useState(2); // Manage total pages
-    const [searchTerm, setSearchTerm] = useState(''); // Search term
-    const [selectedFilters, setSelectedFilters] = useState({ brand: '', category: '', priceRange: '' }); // Selected filters
-    const [sortOption, setSortOption] = useState(''); // Sort option
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]); // For storing search, price, brand, and category filtered results
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(''); // To store search input
+  const [minPrice, setMinPrice] = useState(''); // To store minimum price filter
+  const [maxPrice, setMaxPrice] = useState(''); // To store maximum price filter
+  const [selectedBrand, setSelectedBrand] = useState(''); // To store selected brand
+  const [selectedCategory, setSelectedCategory] = useState(''); // To store selected category
+  const [brandNames, setBrandNames] = useState([]); // To store brand names
+  const [categoryNames, setCategoryNames] = useState([]); // To store category names
 
-    const limit = 10; // Products per page
-
-    // Fetch products from backend
+  useEffect(() => {
+    // Fetch products from the API
     const fetchProducts = async () => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/products`, {
-                params: {
-                    page: currentPage, 
-                    
-                },
-            });
-
-            const allFetchedProducts = response.data.products || [];
-            setAllProducts(allFetchedProducts);
-            console.log(allFetchedProducts);
-            setTotalPages(response.data.totalPages || 1); 
-        } catch (err) {
-            console.error('Error fetching products:', err);
+      try {
+        const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=10`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
         }
+        const data = await response.json();
+
+        // Extract unique brands and categories from the products
+        const uniqueBrands = [...new Set(data.products.map(product => product.brand))];
+        const uniqueCategories = [...new Set(data.products.map(product => product.category))];
+        setBrandNames(uniqueBrands);
+        setCategoryNames(uniqueCategories);
+
+        setProducts(data.products);
+        setFilteredProducts(data.products); // Set filtered products initially to all products
+        setTotalPages(data.totalPages);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // Apply filters, search, and sorting to the fetched products
-    const applyFiltersAndSorting = () => {
-        let tempProducts = [...allProducts];
+    fetchProducts();
+  }, [page]);
 
-        // Search filter
-        if (searchTerm) {
-            tempProducts = tempProducts.filter((product) =>
-                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
+  useEffect(() => {
+    // Filter products based on search query, price range, brand, and category
+    const filtered = products.filter((product) => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesMinPrice = minPrice === '' || product.price >= parseFloat(minPrice);
+      const matchesMaxPrice = maxPrice === '' || product.price <= parseFloat(maxPrice);
+      const matchesBrand = selectedBrand === '' || product.brand === selectedBrand;
+      const matchesCategory = selectedCategory === '' || product.category === selectedCategory;
+      return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesBrand && matchesCategory;
+    });
+    setFilteredProducts(filtered);
+  }, [searchQuery, minPrice, maxPrice, selectedBrand, selectedCategory, products]);
 
-        // Brand filter
-        if (selectedFilters.brand) {
-            tempProducts = tempProducts.filter(
-                (product) => product.brand === selectedFilters.brand
-            );
-        }
+  if (loading) {
+    return <div>Loading products...</div>;
+  }
 
-        // Category filter
-        if (selectedFilters.category) {
-            tempProducts = tempProducts.filter(
-                (product) => product.category === selectedFilters.category
-            );
-        }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-        // Price range filter
-        if (selectedFilters.priceRange) {
-            const [minPrice, maxPrice] = selectedFilters.priceRange.split('-').map(Number);
-            tempProducts = tempProducts.filter(
-                (product) => product.price >= minPrice && product.price <= maxPrice
-            );
-        }
+  const handlePreviousPage = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
 
-        // Sorting
-        if (sortOption === 'priceAsc') {
-            tempProducts = tempProducts.sort((a, b) => a.price - b.price);
-        } else if (sortOption === 'priceDesc') {
-            tempProducts = tempProducts.sort((a, b) => b.price - a.price);
-        }
+  const handleNextPage = () => {
+    if (page < totalPages - 1) {
+      setPage(page + 1);
+    }
+  };
 
-        // Pagination logic
-        // const startIndex = (currentPage - 1) * limit;
-        // const endIndex = startIndex + limit;
-        // setFilteredProducts(tempProducts.slice(startIndex, endIndex));
-    };
+  return (
+    <div>
+      {/* Search and Filter Section */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Search Input */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by product name..."
+          className="w-full px-4 py-2 border rounded-lg"
+        />
 
-    // Fetch products when component mounts or page changes
-    useEffect(() => {
-        fetchProducts();
-    }, [currentPage]);
+        {/* Minimum Price Input */}
+        <input
+          type="number"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          placeholder="Min price"
+          className="w-full px-4 py-2 border rounded-lg"
+        />
 
-    // Apply filters and sorting when any of these change: search, filters, sorting, or allProducts
-    useEffect(() => {
-        applyFiltersAndSorting();
-    }, [searchTerm, selectedFilters, sortOption, allProducts, currentPage]);
+        {/* Maximum Price Input */}
+        <input
+          type="number"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          placeholder="Max price"
+          className="w-full px-4 py-2 border rounded-lg"
+        />
 
-    return (
-        <div className="container mx-auto p-4">
-            {/* Search bar component */}
-            <Searching setSearchTerm={setSearchTerm} />
+        {/* Brand Filter Dropdown */}
+        <select
+          value={selectedBrand}
+          onChange={(e) => setSelectedBrand(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg"
+        >
+          <option value="">All Brands</option>
+          {brandNames.map((brand) => (
+            <option key={brand} value={brand}>
+              {brand}
+            </option>
+          ))}
+        </select>
 
-            {/* Filter by category, brand, price, etc. */}
-            <Categorization selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
+        {/* Category Filter Dropdown */}
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg"
+        >
+          <option value="">All Categories</option>
+          {categoryNames.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            {/* Sorting component */}
-            <Sorting setSortOption={setSortOption} />
-            
-            {/* Products grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product) => (
-                        <ProductCard key={product._id} product={product} />
-                    ))
-                ) : (
-                    <p>No products found</p> // Message when no products are available
-                )}
-            </div>
-            
-            {/* Pagination component */}
-            {/* <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} /> */}
-        </div>
-    );
+      {/* Product List */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <ProductCard key={product._id} product={product} /> // Use ProductCard here
+          ))
+        ) : (
+          <div>No products found</div>
+        )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center space-x-4 mt-6">
+        <button
+          onClick={handlePreviousPage}
+          disabled={page === 0}
+          className={`px-4 py-2 bg-blue-500 text-white rounded-lg ${page === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          Previous
+        </button>
+        <span>
+          Page {page + 1} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={page === totalPages - 1}
+          className={`px-4 py-2 bg-blue-500 text-white rounded-lg ${page === totalPages - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ProductList;

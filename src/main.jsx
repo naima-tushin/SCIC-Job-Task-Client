@@ -29,6 +29,6 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
     <RouterProvider router={router} />
-    </HelmetProvider>
+  </HelmetProvider>
   </StrictMode>,
 )
